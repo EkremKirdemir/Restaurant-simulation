@@ -1,0 +1,26 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Waiters Status</title>
+</head>
+
+<body>
+    <h1>Waiters Status</h1>
+    <div id="status"></div>
+
+    <script>
+        const waiterSocket = new WebSocket('ws://' + window.location.host + '/ws/waiter/');
+
+        waiterSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#status').innerText = data.message;
+        };
+
+        waiterSocket.onclose = function(e) {
+            console.error('Waiter socket closed unexpectedly');
+        };
+    </script>
+</body>
+
+</html>

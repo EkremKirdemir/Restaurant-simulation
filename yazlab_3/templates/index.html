@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Simulation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            text-align: center;
+            padding-top: 50px;
+        }
+        
+        .container {
+            background-color: white;
+            width: 60%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .button-group {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .input-field {
+            margin-bottom: 10px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .customer-list {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .customer-list select {
+            width: 100%;
+            height: 150px;
+        }
+        
+        .start-button {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Restaurant Simulation</h1>
+
+        <button id="start-simulation-1">Start Problem 1 Simulation</button>
+        <button id="start-simulation-2">Start Problem 2 Simulation</button>
+
+        <div id="navigation-buttons" class="button-group">
+            <button onclick="window.location.href='/customers/'">Customers</button>
+            <button onclick="window.location.href='/waiters/'">Waiters</button>
+            <button onclick="window.location.href='/chefs/'">Chefs</button>
+        </div>
+        <!-- Customer input section, initially hidden -->
+        <div id="customer-input-section" style="display: none;">
+            <div class="input-field">
+                <label class="input-label" for="total-customers">Total Customers:</label>
+                <input type="number" id="total-customers" min="0" max="10" value="0">
+            </div>
+            <div class="input-field">
+                <label class="input-label" for="priority-customers">Priority Customers:</label>
+                <input type="number" id="priority-customers" min="0" max="10" value="0">
+            </div>
+            <button id="add-customers">Add Customers</button>
+
+            <div class="customer-list">
+                <select id="customer-list" multiple></select>
+            </div>
+
+            <button id="start-simulation" class="start-button">Start Simulation</button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var customerList2 = [];
+        document.getElementById('start-simulation-1').onclick = function() {
+            document.getElementById('customer-input-section').style.display = 'block';
+            this.style.display = 'none'; // Hide the 'Start Problem 1 Simulation' button
+            document.getElementById('start-simulation-2').style.display = 'none';
+        };
+
+        document.getElementById('add-customers').onclick = function() {
+            var totalCustomers = document.getElementById('total-customers').value;
+            var priorityCustomers = document.getElementById('priority-customers').value;
+            var customerList = document.getElementById('customer-list');
+
+
+            // Add customers to the list
+            if ((totalCustomers > 0 || priorityCustomers > 0) && (priorityCustomers <= totalCustomers || totalCustomers == 10)) {
+                var option = document.createElement('option');
+                option.text = "Total: " + totalCustomers + ", Priority: " + priorityCustomers;
+                customerList.add(option);
+                customerList2.push({
+                    total: totalCustomers,
+                    priority: priorityCustomers
+                });
+
+                // Reset input fields
+                document.getElementById('total-customers').value = "0";
+                document.getElementById('priority-customers').value = "0";
+
+                // Show the start button
+                document.getElementById('start-simulation').style.display = 'block';
+            } else {
+                alert("priority customers cant be bigger than total customers");
+            }
+        };
+
+        // Add your AJAX call or any other logic to the Start Simulation button's onclick event
+        document.getElementById('start-simulation').onclick = function() {
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            // Logic to start the simulation
+            document.getElementById('navigation-buttons').style.display = 'block';
+            document.getElementById('customer-input-section').style.display = 'none';
+            document.getElementById('start-simulation').style.display = 'none';
+            fetch('/start_simulation/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') // You need to implement the getCookie function to fetch the CSRF token
+                },
+                body: JSON.stringify(customerList2)
+            }).then(response => response.json()).then(data => {
+                console.log(data.status);
+                // Additional logic to handle the response
+            }).catch(error => {
+                console.error('Error starting the simulation:', error);
+            });
+        };
+    </script>
+</body>
+
+</html>
