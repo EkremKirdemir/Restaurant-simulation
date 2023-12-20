@@ -28,6 +28,21 @@ waiter_queue = queue.PriorityQueue()
 chef_queue = queue.PriorityQueue()
 cash_register_queue = queue.PriorityQueue()
 
+table_assignments = {i: None for i in range(1, table_count + 1)}
+table_lock = threading.Lock()
+
+def assign_table(customer_id):
+    with table_lock:
+        for table_id, assigned_customer in table_assignments.items():
+            if assigned_customer is None:
+                table_assignments[table_id] = customer_id
+                return table_id
+        return None
+
+def release_table(table_id):
+    with table_lock:
+        table_assignments[table_id] = None
+
 def update_waiter_status(waiter_id, status):
     async_to_sync(channel_layer.group_send)(
         'waiter_group',  # This must match the group name used in your consumer
@@ -81,11 +96,11 @@ def chef(chef_id):
             continue
 
         status = "Priority customer" if priority else "Customer"
-        logging.info(f"{status} {customer_id} is waiting for Chef {chef_id}.")
+        # logging.info(f"{status} {customer_id} is waiting for Chef {chef_id}.")
         update_chef_status(chef_id,f"Chef {chef_id} is preparing dishes of {status} {customer_id}.")
         time.sleep(3)
         update_chef_status(chef_id,f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
-        logging.info(f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
+        # logging.info(f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
         chef_queue.task_done()
 
         customer_event.set()
@@ -103,11 +118,11 @@ def waiter(waiter_id):
             continue
 
         status = "Priority customer" if priority else "Customer"
-        logging.info(f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
+        # logging.info(f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
         update_waiter_status(waiter_id,f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
         time.sleep(2)
         update_waiter_status(waiter_id,f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
-        logging.info(f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
+        # logging.info(f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
         waiter_queue.task_done()
 
         chef_queue.put((priority, arrival_time, customer_id, customer_event))
@@ -140,18 +155,28 @@ def customer_process(customer_id,priority):
         logging.info(f"{status} {customer_id} left the restaurant after waiting too long for a table.")
         return  # Exit the customer process if no table is available within 20 seconds
 
-    # If a table is acquired, proceed with the dining process
-    logging.info(f"{status} {customer_id} has been seated at a table.")
+    # Assign a table ID
+    table_id = assign_table(customer_id)
+    if table_id is None:
+        logging.error(f"Error in table assignment for {status} {customer_id}")
+        table_semaphore.release()
+        return
+    logging.info(f"{status} {customer_id} has been seated at table {table_id}.")
+    update_table_status(table_id, f"{status} {customer_id} is waiting for waiter")
+    # logging.info(f"{status} {customer_id} has been seated at a table.")
     # Request a waiter
     waiter_queue.put((priority, customer_id, customer_id, eating_event))
     eating_event.wait()  # Wait for the waiter to take the order and the chef to prepare the food
     eating_event.clear()
 
     # Eating
-    logging.info(f"{status} {customer_id} is eating.")
+    # logging.info(f"{status} {customer_id} is eating.")
+    update_table_status(table_id, f"{status} {customer_id} is eating")
     time.sleep(3)  # Simulate the time taken to eat the meal
-
+    logging.info(f"{status} {customer_id} finished eating at table {table_id}.")
+    update_table_status(table_id, "Available")
     # Release the table semaphore to indicate the table is now free
+    release_table(table_id)
     table_semaphore.release()
 
     # Request to pay
@@ -159,7 +184,7 @@ def customer_process(customer_id,priority):
     payment_event.wait()  # Wait for the cash register to be available
     payment_event.clear()
 
-    logging.info(f"{status} {customer_id} has completed dining and payment.")
+    # logging.info(f"{status} {customer_id} has completed dining and payment.")
 
 def start_simulation(customer_list):
     logging.info("Starting simulation.")

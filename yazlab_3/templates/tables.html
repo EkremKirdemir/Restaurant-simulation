@@ -13,7 +13,7 @@
     {% for table in tables %}
     <div class="table" id="table-{{ table.id }}">
         <img src="{% static 'table.png' %}" alt="Table {{ table.id }}" />
-        <p>Status: <span id="status-{{ table.id }}">Idle</span></p>
+        <p>Status: <span id="status-{{ table.id }}">Available</span></p>
     </div>
     {% endfor %}
 
