@@ -30,9 +30,9 @@ cash_register_queue = queue.PriorityQueue()
 
 def update_waiter_status(waiter_id, status):
     async_to_sync(channel_layer.group_send)(
-        'waiter',  # Channel group name
+        'waiter_group',  # This must match the group name used in your consumer
         {
-            'type': 'send_status',  # Corresponds to the send_status method in the consumer
+            'type': 'waiter_status',  # This must match the method name in your consumer
             'message': {
                 'id': waiter_id,
                 'status': status
@@ -79,7 +79,9 @@ def waiter(waiter_id):
 
         status = "Priority customer" if priority else "Customer"
         logging.info(f"{status} {customer_id} is waiting for Waiter {waiter_id}.")
+        update_waiter_status(waiter_id,"doing")
         time.sleep(2)
+        update_waiter_status(waiter_id,"done")
         logging.info(f"{status} {customer_id} has given an order to Waiter {waiter_id}.")
         waiter_queue.task_done()
 

@@ -10,10 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_URL = "static/"
+
+# Add the following line if you don't have it already
+# It tells Django where to find the static files in development
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 
 
 # Quick-start development settings - unsuitable for production
@@ -65,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'yazlab_3.urls'
@@ -86,7 +93,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'yazlab_3.wsgi.application'
-ASGI_APPLICATION = 'yazlab_3.routing.application'
+ASGI_APPLICATION = 'yazlab_3.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -139,8 +146,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

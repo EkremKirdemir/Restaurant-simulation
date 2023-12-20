@@ -1,25 +1,48 @@
 # consumers.py
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+import logging
+logger = logging.getLogger(__name__)
 
 class WaiterConsumer(AsyncWebsocketConsumer):
+    
     async def connect(self):
+        # Join waiter group
+        await self.channel_layer.group_add(
+            'waiter_group',
+            self.channel_name
+        )
         await self.accept()
 
     async def disconnect(self, close_code):
-        pass
+        # Leave waiter group
+        await self.channel_layer.group_discard(
+            'waiter_group',
+            self.channel_name
+        )
 
+    # Receive message from WebSocket
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
+        
+        text_data_json = json.loads(text_data)    
         message = text_data_json['message']
+        logger.debug("sadasdsadasfasfas")
 
-        # Send the message to WebSocket
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+        # Send message to group
+        await self.channel_layer.group_send(
+            'waiter_group',
+            {
+                'type': 'waiter_status',
+                'message': message
+            }
+        )
 
-    # This helper function can be called to send the waiter's status to the WebSocket
-    async def waiter_status(self, message):
+    # Receive message from group
+    async def waiter_status(self, event):
+        logger.debug("sadasdsadasfasfas")
+        message = event['message']
+
+        # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message
         }))

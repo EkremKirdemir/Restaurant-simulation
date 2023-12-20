@@ -1,3 +1,4 @@
+{% load static %}
 <html lang="en">
 
 <head>
@@ -5,20 +6,35 @@
     <title>Waiters Status</title>
 </head>
 
+
 <body>
     <h1>Waiters Status</h1>
     <div id="status"></div>
+    {% for waiter in waiters %}
+    <div class="waiter" id="waiter-{{ waiter.id }}">
+        <img src="{% static 'waiter.png' %}" alt="Waiter {{ waiter.id }}" />
+        <p>Status: <span id="status-{{ waiter.id }}">Idle</span></p>
+    </div>
+    {% endfor %}
 
     <script>
         const waiterSocket = new WebSocket('ws://' + window.location.host + '/ws/waiter/');
 
-        waiterSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#status').innerText = data.message;
-        };
-
         waiterSocket.onclose = function(e) {
             console.error('Waiter socket closed unexpectedly');
+        };
+
+        function updateWaiterStatus(waiterId, status) {
+            const statusElement = document.getElementById('status-' + waiterId);
+            if (statusElement) {
+                statusElement.textContent = status;
+            }
+        }
+        waiterSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            // 'type' is not typically included in the data unless you send it explicitly
+            // If you're sending it, you'll need to adjust the backend code accordingly
+            updateWaiterStatus(data.message.id, data.message.status);
         };
     </script>
 </body>

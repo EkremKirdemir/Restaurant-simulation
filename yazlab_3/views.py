@@ -3,19 +3,17 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from .simulation import start_simulation  # This should be the path to your simulation start function
+from .simulation import start_simulation,waiter_count  # This should be the path to your simulation start function
 import json
 import logging
 
 logger = logging.getLogger(__name__)
 def index(request):
-    logger.debug("sadasd")
     return render(request, 'index.html')
 
 @csrf_exempt
 @require_http_methods(["POST"])
 def start_simulation_view(request):
-    logger.debug("sadasdasd")
     try:
         # Load customer data from the request body
         # customer_list = json.loads(request.body.decode('utf-8'))
@@ -31,7 +29,8 @@ def customers_view(request):
 
 def waiters_view(request):
     # Render your waiters page
-    return render(request, 'waiters.html')
+    waiters = [{'id': i} for i in range(1, waiter_count + 1)]
+    return render(request, 'waiters.html', {'waiters': waiters})
 
 def chefs_view(request):
     # Render your chefs page
