@@ -39,6 +39,28 @@ def update_waiter_status(waiter_id, status):
             }
         }
     )
+def update_chef_status(chef_id, status):
+    async_to_sync(channel_layer.group_send)(
+        'chef_group',  # This must match the group name used in your consumer
+        {
+            'type': 'chef_status',  # This must match the method name in your consumer
+            'message': {
+                'id': chef_id,
+                'status': status
+            }
+        }
+    )
+def update_table_status(table_id, status):
+    async_to_sync(channel_layer.group_send)(
+        'table_group',  # This must match the group name used in your consumer
+        {
+            'type': 'table_status',  # This must match the method name in your consumer
+            'message': {
+                'id': table_id,
+                'status': status
+            }
+        }
+    )
 
 def manage_tables():
     while True:
@@ -60,13 +82,16 @@ def chef(chef_id):
 
         status = "Priority customer" if priority else "Customer"
         logging.info(f"{status} {customer_id} is waiting for Chef {chef_id}.")
+        update_chef_status(chef_id,f"Chef {chef_id} is preparing dishes of {status} {customer_id}.")
         time.sleep(3)
-        logging.info(f"{status} {customer_id}'s order is ready by Chef {chef_id}.")
+        update_chef_status(chef_id,f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
+        logging.info(f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
         chef_queue.task_done()
 
         customer_event.set()
         customer_event.clear()
         chef_semaphore.release()
+        update_chef_status(chef_id,f"Chef {chef_id} is Idle.")
 
 def waiter(waiter_id):
     while True:
@@ -78,11 +103,11 @@ def waiter(waiter_id):
             continue
 
         status = "Priority customer" if priority else "Customer"
-        logging.info(f"{status} {customer_id} is waiting for Waiter {waiter_id}.")
-        update_waiter_status(waiter_id,"doing")
+        logging.info(f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
+        update_waiter_status(waiter_id,f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
         time.sleep(2)
-        update_waiter_status(waiter_id,"done")
-        logging.info(f"{status} {customer_id} has given an order to Waiter {waiter_id}.")
+        update_waiter_status(waiter_id,f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
+        logging.info(f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
         waiter_queue.task_done()
 
         chef_queue.put((priority, arrival_time, customer_id, customer_event))
@@ -90,6 +115,8 @@ def waiter(waiter_id):
         customer_event.wait()
         customer_event.clear()
         waiter_semaphore.release()
+        update_waiter_status(waiter_id,f"Waiter {waiter_id} is Idle.")
+
 
 def manage_cash_registers():
     while True:

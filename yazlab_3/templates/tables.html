@@ -1,0 +1,42 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tables Status</title>
+</head>
+
+
+<body>
+    <h1>Tables Status</h1>
+    <div id="status"></div>
+    {% for table in tables %}
+    <div class="table" id="table-{{ table.id }}">
+        <img src="{% static 'table.png' %}" alt="Table {{ table.id }}" />
+        <p>Status: <span id="status-{{ table.id }}">Idle</span></p>
+    </div>
+    {% endfor %}
+
+    <script>
+        const tableSocket = new WebSocket('ws://' + window.location.host + '/ws/table/');
+
+        tableSocket.onclose = function(e) {
+            console.error('Table socket closed unexpectedly');
+        };
+
+        function updateTableStatus(tableId, status) {
+            const statusElement = document.getElementById('status-' + tableId);
+            if (statusElement) {
+                statusElement.textContent = status;
+            }
+        }
+        tableSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            // 'type' is not typically included in the data unless you send it explicitly
+            // If you're sending it, you'll need to adjust the backend code accordingly
+            updateTableStatus(data.message.id, data.message.status);
+        };
+    </script>
+</body>
+
+</html>

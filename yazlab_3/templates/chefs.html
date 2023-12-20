@@ -1,0 +1,42 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chefs Status</title>
+</head>
+
+
+<body>
+    <h1>Chefs Status</h1>
+    <div id="status"></div>
+    {% for chef in chefs %}
+    <div class="chef" id="chef-{{ chef.id }}">
+        <img src="{% static 'chef.png' %}" alt="Chef {{ chef.id }}" />
+        <p>Status: <span id="status-{{ chef.id }}">Idle</span></p>
+    </div>
+    {% endfor %}
+
+    <script>
+        const chefSocket = new WebSocket('ws://' + window.location.host + '/ws/chef/');
+
+        chefSocket.onclose = function(e) {
+            console.error('Chef socket closed unexpectedly');
+        };
+
+        function updateChefStatus(chefId, status) {
+            const statusElement = document.getElementById('status-' + chefId);
+            if (statusElement) {
+                statusElement.textContent = status;
+            }
+        }
+        chefSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            // 'type' is not typically included in the data unless you send it explicitly
+            // If you're sending it, you'll need to adjust the backend code accordingly
+            updateChefStatus(data.message.id, data.message.status);
+        };
+    </script>
+</body>
+
+</html>
