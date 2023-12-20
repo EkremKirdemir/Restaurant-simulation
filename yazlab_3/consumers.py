@@ -26,7 +26,6 @@ class WaiterConsumer(AsyncWebsocketConsumer):
         
         text_data_json = json.loads(text_data)    
         message = text_data_json['message']
-        logger.debug("sadasdsadasfasfas")
 
         # Send message to group
         await self.channel_layer.group_send(
@@ -39,7 +38,6 @@ class WaiterConsumer(AsyncWebsocketConsumer):
 
     # Receive message from group
     async def waiter_status(self, event):
-        logger.debug("sadasdsadasfasfas")
         message = event['message']
 
         # Send message to WebSocket
@@ -68,8 +66,6 @@ class ChefConsumer(AsyncWebsocketConsumer):
         
         text_data_json = json.loads(text_data)    
         message = text_data_json['message']
-        logger.debug("sadasdsadasfasfas")
-
         # Send message to group
         await self.channel_layer.group_send(
             'chef_group',
@@ -81,7 +77,6 @@ class ChefConsumer(AsyncWebsocketConsumer):
 
     # Receive message from group
     async def chef_status(self, event):
-        logger.debug("sadasdsadasfasfas")
         message = event['message']
 
         # Send message to WebSocket
@@ -110,8 +105,6 @@ class TableConsumer(AsyncWebsocketConsumer):
         
         text_data_json = json.loads(text_data)    
         message = text_data_json['message']
-        logger.debug("sadasdsadasfasfas")
-
         # Send message to group
         await self.channel_layer.group_send(
             'table_group',
@@ -123,6 +116,46 @@ class TableConsumer(AsyncWebsocketConsumer):
 
     # Receive message from group
     async def table_status(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
+class CashConsumer(AsyncWebsocketConsumer):
+    
+    async def connect(self):
+        # Join waiter group
+        await self.channel_layer.group_add(
+            'cashRegister_group',
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave waiter group
+        await self.channel_layer.group_discard(
+            'cashRegister_group',
+            self.channel_name
+        )
+
+    # Receive message from WebSocket
+    async def receive(self, text_data):
+        
+        text_data_json = json.loads(text_data)    
+        message = text_data_json['message']
+        logger.debug("sadasdsadasfasfas")
+
+        # Send message to group
+        await self.channel_layer.group_send(
+            'cashRegister_group',
+            {
+                'type': 'cashRegister_status',
+                'message': message
+            }
+        )
+
+    # Receive message from group
+    async def cashRegister_status(self, event):
         logger.debug("sadasdsadasfasfas")
         message = event['message']
 

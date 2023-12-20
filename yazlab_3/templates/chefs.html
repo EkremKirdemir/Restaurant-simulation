@@ -4,18 +4,152 @@
 <head>
     <meta charset="UTF-8">
     <title>Chefs Status</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            /* changed from absolute to fixed */
+            top: 0;
+            left: 0;
+            right: 0;
+            /* Ensure the header spans the full width */
+            background-color: #f7f7f7;
+            /* Match the body background */
+            z-index: 1000;
+            /* Ensure the header is above all other content */
+        }
+        
+        .button-group-left,
+        .button-group-right {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .button-group-right {
+            justify-content: flex-end;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding-top: 70px;
+            /* Increased padding to ensure content starts below the header */
+        }
+        
+        .container {
+            background-color: white;
+            width: 60%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            width: 100%;
+            margin-top: 20px;
+            /* Adjust the margin-top to give space for the header */
+            color: #333;
+            font-size: 2em;
+            /* Increase the font size if needed */
+        }
+        
+        .chefs-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            /* Adjusts spacing around items */
+            align-items: flex-start;
+            /* Aligns items at the start of the container */
+            gap: 20px;
+            /* Space between chefs */
+            padding-top: 40px;
+        }
+        
+        .chef img {
+            max-width: 100%;
+            /* Makes image responsive within its container */
+            height: auto;
+            /* Maintain aspect ratio */
+            max-height: 150px;
+            /* Adjust this value to scale the images down */
+        }
+        
+        .chef {
+            flex: 1 0 22%;
+            /* 4 per row */
+            box-sizing: border-box;
+            text-align: center;
+            /* Center the text and image in the div */
+        }
+        /* Media query for smaller screens */
+        
+        @media (max-width: 20px) {
+            .chef {
+                flex: 1 0 45%;
+                /* Adjusts the base width for smaller screens */
+            }
+        }
+        /* Media query for very small screens */
+        
+        @media (max-width: 10px) {
+            .chef {
+                flex: 1 0 10%;
+                /* Each chef takes full width on very small screens */
+            }
+        }
+    </style>
 </head>
 
 
 <body>
-    <h1>Chefs Status</h1>
-    <div id="status"></div>
-    {% for chef in chefs %}
-    <div class="chef" id="chef-{{ chef.id }}">
-        <img src="{% static 'chef.png' %}" alt="Chef {{ chef.id }}" />
-        <p>Status: <span id="status-{{ chef.id }}">Idle</span></p>
+    <div class="header">
+        <div class="button-group-left">
+            <button id="tables-button" onclick="window.location.href='/tables/'">Tables</button>
+            <button id="waiters-button" onclick="window.location.href='/waiters/'">Waiters</button>
+            <button id="cash-register-button" onclick="window.location.href='/cashRegister/'">Cash Register</button>
+        </div>
+        <h1>Chefs Status</h1>
+        <div class="button-group-right">
+            <button id="main-menu-button" onclick="window.location.href='/'">Restaurant Main Menu</button>
+        </div>
     </div>
-    {% endfor %}
+    <div id="status"></div>
+    <div class="chefs-container">
+        {% for chef in chefs %}
+        <div class="chef" id="chef-{{ chef.id }}">
+            <img src="{% static 'chef.png' %}" alt="Chef {{ chef.id }}" />
+            <p>Status: <span id="status-{{ chef.id }}">Idle</span></p>
+        </div>
+        {% endfor %}
+    </div>
 
     <script>
         const chefSocket = new WebSocket('ws://' + window.location.host + '/ws/chef/');

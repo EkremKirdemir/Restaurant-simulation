@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from .simulation import start_simulation,waiter_count,chef_count,table_count # This should be the path to your simulation start function
+from .simulation import start_simulation,waiter_count,chef_count,table_count, cash_register_count# This should be the path to your simulation start function
 import json
 import logging
 
@@ -22,6 +22,9 @@ def start_simulation_view(request):
         return JsonResponse({'status': 'Simulation started'})
     except json.JSONDecodeError as e:
         return JsonResponse({'status': 'Invalid data', 'error': str(e)}, status=400)
+def cashRegister_view(request):
+    cashRegisters = [{'id': i} for i in range(1, cash_register_count + 1)]
+    return render(request, 'cash_register.html', {'cashRegisters': cashRegisters})
 
 def tables_view(request):
     # Render your customers page

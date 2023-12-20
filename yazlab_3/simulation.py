@@ -42,7 +42,17 @@ def assign_table(customer_id):
 def release_table(table_id):
     with table_lock:
         table_assignments[table_id] = None
-
+def update_cashRegister_status(cashRegister_id, status):
+    async_to_sync(channel_layer.group_send)(
+        'cashRegister_group',  # This must match the group name used in your consumer
+        {
+            'type': 'cashRegister_status',  # This must match the method name in your consumer
+            'message': {
+                'id': cashRegister_id,
+                'status': status
+            }
+        }
+    )
 def update_waiter_status(waiter_id, status):
     async_to_sync(channel_layer.group_send)(
         'waiter_group',  # This must match the group name used in your consumer
@@ -137,8 +147,10 @@ def manage_cash_registers():
     while True:
         priority, arrival_time, customer_id, customer_event = cash_register_queue.get()
         status = "Priority customer" if priority else "Customer"
-        logging.info(f"{status} {customer_id} is paying.")
+        update_cashRegister_status(0,f"{status} {customer_id} is paying.")
+        update_cashRegister_status(1,f"{status} {customer_id} is paying.")
         time.sleep(1)
+        update_cashRegister_status(1,"Available")
         customer_event.set()  # Signal the customer that the cash register is available
         cash_register_queue.task_done()
 
