@@ -126,6 +126,42 @@
                 /* Each chef takes full width on very small screens */
             }
         }
+        
+        .queue-container,
+        .left-container {
+            margin-top: 20px;
+            padding: 0 20px;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        li {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        li.priority {
+            background-color: #ffd700;
+        }
+        
+        li .status {
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -153,7 +189,19 @@
         </div>
         {% endfor %}
     </div>
+    <div class="queue-container">
+        <h2>Waiting Queue</h2>
+        <ul id="waiting-queue">
+            <!-- Waiting customers will be listed here -->
+        </ul>
+    </div>
 
+    <div class="left-container">
+        <h2>Customers Left</h2>
+        <ul id="customers-left">
+            <!-- Customers who have left will be listed here -->
+        </ul>
+    </div>
     <script>
         const tableSocket = new WebSocket('ws://' + window.location.host + '/ws/table/');
 
@@ -169,10 +217,48 @@
         }
         tableSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
+            if (data.type === 'update_queue') {
+                const action = data.action;
+                const customerId = data.customer_id;
+                const customerStatus = data.status; // 'Priority customer' or 'Customer'
+
+                // Function calls to update the UI
+                if (action === 'add_to_queue') {
+                    addCustomerToQueue(customerId, customerStatus);
+                } else if (action === 'remove_from_queue') {
+                    removeCustomerFromQueue(customerId);
+                } else if (action === 'add_to_left') {
+                    addCustomerToLeft(customerId, customerStatus);
+                }
+            }
             // 'type' is not typically included in the data unless you send it explicitly
             // If you're sending it, you'll need to adjust the backend code accordingly
             updateTableStatus(data.message.id, data.message.status);
         };
+
+        function addCustomerToQueue(customerId, status) {
+            const queueList = document.getElementById('waiting-queue');
+            const listItem = document.createElement('li');
+            listItem.id = 'queue-customer-' + customerId;
+            listItem.textContent = status + ' ' + customerId;
+            queueList.appendChild(listItem);
+        }
+
+        function removeCustomerFromQueue(customerId) {
+            const listItem = document.getElementById('queue-customer-' + customerId);
+            listItem.remove();
+        }
+
+        function addCustomerToLeft(customerId, status) {
+            const leftList = document.getElementById('customers-left');
+            const listItem = document.createElement('li');
+            listItem.id = 'left-customer-' + customerId;
+            listItem.textContent = status + ' ' + customerId;
+            leftList.appendChild(listItem);
+        }
+
+
+        // Existing WebSocket code
     </script>
 </body>
 

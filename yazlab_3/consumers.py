@@ -121,6 +121,14 @@ class TableConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': message
         }))
+    async def update_queue_status(self, event):
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({
+            'type': 'update_queue',
+            'status':event['message']['status'],
+            'action': event['message']['action'],  # 'add_to_queue', 'remove_from_queue', 'add_to_left'
+            'customer_id': event['message']['customer_id']
+        }))
 class CashConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):

@@ -42,6 +42,19 @@ def assign_table(customer_id):
 def release_table(table_id):
     with table_lock:
         table_assignments[table_id] = None
+def update_queue_status(action, customer_id,status):
+    async_to_sync(channel_layer.group_send)(
+        'table_group',
+        {
+            'type': 'update_queue_status',
+            'message': {
+                'status': status,
+                'action': action,
+                'customer_id': customer_id
+            }
+        }
+    )
+
 def update_cashRegister_status(cashRegister_id, status):
     async_to_sync(channel_layer.group_send)(
         'cashRegister_group',  # This must match the group name used in your consumer
@@ -147,7 +160,7 @@ def manage_cash_registers():
     while True:
         priority, arrival_time, customer_id, customer_event = cash_register_queue.get()
         status = "Priority customer" if priority else "Customer"
-        update_cashRegister_status(0,f"{status} {customer_id} is paying.")
+        # update_cashRegister_status(0,f"{status} {customer_id} is paying.")
         update_cashRegister_status(1,f"{status} {customer_id} is paying.")
         time.sleep(1)
         update_cashRegister_status(1,"Available")
@@ -161,9 +174,11 @@ def customer_process(customer_id,priority):
     payment_event = threading.Event()
 
     status = "Priority customer" if priority else "Customer"
-
+    update_queue_status('add_to_queue', customer_id,status)
     # Attempt to request a table with a timeout of 20 seconds
     if not table_semaphore.acquire(timeout=20):
+        update_queue_status('remove_from_queue', customer_id,status)
+        update_queue_status('add_to_left', customer_id,status)
         logging.info(f"{status} {customer_id} left the restaurant after waiting too long for a table.")
         return  # Exit the customer process if no table is available within 20 seconds
 
@@ -173,6 +188,7 @@ def customer_process(customer_id,priority):
         logging.error(f"Error in table assignment for {status} {customer_id}")
         table_semaphore.release()
         return
+    update_queue_status('remove_from_queue', customer_id,status)
     logging.info(f"{status} {customer_id} has been seated at table {table_id}.")
     update_table_status(table_id, f"{status} {customer_id} is waiting for waiter")
     # logging.info(f"{status} {customer_id} has been seated at a table.")
