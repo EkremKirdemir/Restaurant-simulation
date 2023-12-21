@@ -27,7 +27,6 @@
         
         button {
             background-color: #4CAF50;
-            /* Green */
             border: none;
             color: white;
             padding: 15px 32px;
@@ -90,7 +89,26 @@
             <button onclick="window.location.href='/waiters/'">Waiters</button>
             <button onclick="window.location.href='/chefs/'">Chefs</button>
         </div>
-        <!-- Customer input section, initially hidden -->
+        <div id="normal-flow-inputs" style="display: none;">
+            <div class="input-field">
+                <label class="input-label" for="total-time">Total Time (seconds):</label>
+                <input type="number" id="total-time" min="1" required>
+            </div>
+            <div class="input-field">
+                <label class="input-label" for="total-customers-2">Total Customers:</label>
+                <input type="number" id="total-customers-2" min="1" max="10" required>
+            </div>
+            <div class="input-field">
+                <label class="input-label" for="priority-customers-2">Priority Customers:</label>
+                <input type="number" id="priority-customers-2" min="0" max="10" required>
+            </div>
+            <div class="input-field">
+                <label class="input-label" for="customer-interval">Customer Interval (seconds):</label>
+                <input type="number" id="customer-interval" min="1" required>
+            </div>
+            <button id="start-normal-simulation">Start Normal Simulation</button>
+        </div>
+
         <div id="customer-input-section" style="display: none;">
             <div class="input-field">
                 <label class="input-label" for="total-customers">Total Customers:</label>
@@ -108,14 +126,42 @@
 
             <button id="start-simulation" class="start-button">Start Simulation</button>
         </div>
+        <div id="results-section" style="display: none;">
+            <h2>Simulation Results</h2>
+            <p id="best-setup"></p>
+            <p id="best-profit"></p>
+            <button id="return-main">Return to Main Page</button>
+        </div>
+
     </div>
 
     <script type="text/javascript">
         var customerList2 = [];
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         document.getElementById('start-simulation-1').onclick = function() {
             document.getElementById('customer-input-section').style.display = 'block';
-            this.style.display = 'none'; // Hide the 'Start Problem 1 Simulation' button
+            this.style.display = 'none';
             document.getElementById('start-simulation-2').style.display = 'none';
+        };
+        document.getElementById('start-simulation-2').onclick = function() {
+            this.style.display = 'none';
+            document.getElementById('start-simulation-1').style.display = 'none';;
+            document.getElementById('normal-flow-inputs').style.display = 'block';
         };
 
         document.getElementById('add-customers').onclick = function() {
@@ -124,7 +170,7 @@
             var customerList = document.getElementById('customer-list');
 
 
-            // Add customers to the list
+
             if ((totalCustomers > 0 || priorityCustomers > 0) && (priorityCustomers <= totalCustomers || totalCustomers == 10)) {
                 var option = document.createElement('option');
                 option.text = "Total: " + totalCustomers + ", Priority: " + priorityCustomers;
@@ -134,34 +180,21 @@
                     priority: priorityCustomers
                 });
 
-                // Reset input fields
+
                 document.getElementById('total-customers').value = "0";
                 document.getElementById('priority-customers').value = "0";
 
-                // Show the start button
+
                 document.getElementById('start-simulation').style.display = 'block';
             } else {
                 alert("priority customers cant be bigger than total customers");
             }
         };
 
-        // Add your AJAX call or any other logic to the Start Simulation button's onclick event
+
         document.getElementById('start-simulation').onclick = function() {
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-            // Logic to start the simulation
+
+
             document.getElementById('navigation-buttons').style.display = 'block';
             document.getElementById('customer-input-section').style.display = 'none';
             document.getElementById('start-simulation').style.display = 'none';
@@ -169,15 +202,85 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken') // You need to implement the getCookie function to fetch the CSRF token
+                    'X-CSRFToken': getCookie('csrftoken')
                 },
                 body: JSON.stringify(customerList2)
             }).then(response => response.json()).then(data => {
                 console.log(data.status);
-                // Additional logic to handle the response
+
             }).catch(error => {
                 console.error('Error starting the simulation:', error);
             });
+        };
+        document.getElementById('start-normal-simulation').onclick = function() {
+            var totalTime = document.getElementById('total-time').value;
+            var totalCustomers = document.getElementById('total-customers-2').value;
+            var priorityCustomers = document.getElementById('priority-customers-2').value;
+            var customerInterval = document.getElementById('customer-interval').value;
+
+
+            if (!totalTime || totalTime <= 0) {
+                alert('Total time must be greater than 0.');
+                return;
+            }
+            if (!totalCustomers || totalCustomers <= 0 || totalCustomers > 10) {
+                alert('Total customers must be between 1 and 10.');
+                return;
+            }
+            if (!(totalCustomers > 0 || priorityCustomers > 0) && (priorityCustomers <= totalCustomers || totalCustomers == 10)) {
+                alert('Priority customers cannot be greater than total customers or negative.');
+                return;
+            }
+            if (!customerInterval || customerInterval <= 0) {
+                alert('Customer interval must be greater than 0.');
+                return;
+            }
+
+
+            document.getElementById('normal-flow-inputs').style.display = 'none';
+            var intervals = Math.floor(totalTime / customerInterval);
+
+
+            var customerList2 = [];
+            for (var i = 0; i < intervals; i++) {
+                customerList2.push({
+                    total: document.getElementById('total-customers-2').value,
+                    priority: document.getElementById('priority-customers-2').value
+                });
+            }
+
+
+            fetch('/start_simulation_normal/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    customerList: customerList2,
+                    totalTime: totalTime,
+                    customerInterval: customerInterval,
+                    intervals: intervals
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }).then(data => {
+
+                document.getElementById('results-section').style.display = 'block';
+                document.getElementById('best-setup').textContent = `Best Setup: Tables - ${data.best_setup.tables}, Waiters - ${data.best_setup.waiters}, Chefs - ${data.best_setup.chefs}`;
+                document.getElementById('best-profit').textContent = `Best Profit: ${data.best_profit}`;
+
+
+                document.getElementById('start-normal-simulation').style.display = 'none';
+            }).catch(error => {
+                console.error('Error starting the simulation:', error);
+            });
+        };
+        document.getElementById('return-main').onclick = function() {
+            window.location.reload();
         };
     </script>
 </body>

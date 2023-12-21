@@ -1,4 +1,3 @@
-# routing.py
 from django.urls import path
 from .consumers import WaiterConsumer,ChefConsumer,TableConsumer,CashConsumer
 from channels.routing import ProtocolTypeRouter, URLRouter

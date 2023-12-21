@@ -1,4 +1,4 @@
-# simulation.py
+
 import threading
 import time
 import queue
@@ -7,7 +7,6 @@ from channels.layers import get_channel_layer
 import logging
 
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, filename='simulation.log', filemode='a',
                     format='%(asctime)s - %(levelname)s - %(message)s')
 channel_layer = get_channel_layer()
@@ -17,12 +16,11 @@ waiter_count = 3
 chef_count = 2
 cash_register_count = 1
 
-# Semaphores for waiter and chef counts
+customers_served = 0
 waiter_semaphore = threading.Semaphore(waiter_count)
 chef_semaphore = threading.Semaphore(chef_count)
 table_semaphore = threading.Semaphore(table_count)
 
-# Priority queues
 table_queue = queue.PriorityQueue()
 waiter_queue = queue.PriorityQueue()
 chef_queue = queue.PriorityQueue()
@@ -57,9 +55,9 @@ def update_queue_status(action, customer_id,status):
 
 def update_cashRegister_status(cashRegister_id, status):
     async_to_sync(channel_layer.group_send)(
-        'cashRegister_group',  # This must match the group name used in your consumer
+        'cashRegister_group', 
         {
-            'type': 'cashRegister_status',  # This must match the method name in your consumer
+            'type': 'cashRegister_status', 
             'message': {
                 'id': cashRegister_id,
                 'status': status
@@ -68,9 +66,9 @@ def update_cashRegister_status(cashRegister_id, status):
     )
 def update_waiter_status(waiter_id, status):
     async_to_sync(channel_layer.group_send)(
-        'waiter_group',  # This must match the group name used in your consumer
+        'waiter_group', 
         {
-            'type': 'waiter_status',  # This must match the method name in your consumer
+            'type': 'waiter_status', 
             'message': {
                 'id': waiter_id,
                 'status': status
@@ -79,9 +77,9 @@ def update_waiter_status(waiter_id, status):
     )
 def update_chef_status(chef_id, status):
     async_to_sync(channel_layer.group_send)(
-        'chef_group',  # This must match the group name used in your consumer
+        'chef_group', 
         {
-            'type': 'chef_status',  # This must match the method name in your consumer
+            'type': 'chef_status', 
             'message': {
                 'id': chef_id,
                 'status': status
@@ -90,9 +88,9 @@ def update_chef_status(chef_id, status):
     )
 def update_table_status(table_id, status):
     async_to_sync(channel_layer.group_send)(
-        'table_group',  # This must match the group name used in your consumer
+        'table_group', 
         {
-            'type': 'table_status',  # This must match the method name in your consumer
+            'type': 'table_status', 
             'message': {
                 'id': table_id,
                 'status': status
@@ -103,10 +101,10 @@ def update_table_status(table_id, status):
 def manage_tables():
     while True:
         priority, arrival_time, customer_id, customer_event = table_queue.get()
-        table_semaphore.acquire()  # Acquire a table
+        table_semaphore.acquire() 
         status = "Priority customer" if priority else "Customer"
         logging.info(f"{status} {customer_id} has been seated at a table.")
-        customer_event.set()  # Signal the customer that a table is available
+        customer_event.set() 
         table_queue.task_done()
 
 def chef(chef_id):
@@ -119,11 +117,11 @@ def chef(chef_id):
             continue
 
         status = "Priority customer" if priority else "Customer"
-        # logging.info(f"{status} {customer_id} is waiting for Chef {chef_id}.")
+    
         update_chef_status(chef_id,f"Chef {chef_id} is preparing dishes of {status} {customer_id}.")
         time.sleep(3)
         update_chef_status(chef_id,f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
-        # logging.info(f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
+    
         chef_queue.task_done()
 
         customer_event.set()
@@ -141,11 +139,11 @@ def waiter(waiter_id):
             continue
 
         status = "Priority customer" if priority else "Customer"
-        # logging.info(f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
+    
         update_waiter_status(waiter_id,f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
         time.sleep(2)
         update_waiter_status(waiter_id,f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
-        # logging.info(f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
+    
         waiter_queue.task_done()
 
         chef_queue.put((priority, arrival_time, customer_id, customer_event))
@@ -160,11 +158,11 @@ def manage_cash_registers():
     while True:
         priority, arrival_time, customer_id, customer_event = cash_register_queue.get()
         status = "Priority customer" if priority else "Customer"
-        # update_cashRegister_status(0,f"{status} {customer_id} is paying.")
+    
         update_cashRegister_status(1,f"{status} {customer_id} is paying.")
         time.sleep(1)
         update_cashRegister_status(1,"Available")
-        customer_event.set()  # Signal the customer that the cash register is available
+        customer_event.set() 
         cash_register_queue.task_done()
 
 
@@ -175,14 +173,14 @@ def customer_process(customer_id,priority):
 
     status = "Priority customer" if priority else "Customer"
     update_queue_status('add_to_queue', customer_id,status)
-    # Attempt to request a table with a timeout of 20 seconds
+
     if not table_semaphore.acquire(timeout=20):
         update_queue_status('remove_from_queue', customer_id,status)
         update_queue_status('add_to_left', customer_id,status)
         logging.info(f"{status} {customer_id} left the restaurant after waiting too long for a table.")
-        return  # Exit the customer process if no table is available within 20 seconds
+        return 
 
-    # Assign a table ID
+
     table_id = assign_table(customer_id)
     if table_id is None:
         logging.error(f"Error in table assignment for {status} {customer_id}")
@@ -191,32 +189,38 @@ def customer_process(customer_id,priority):
     update_queue_status('remove_from_queue', customer_id,status)
     logging.info(f"{status} {customer_id} has been seated at table {table_id}.")
     update_table_status(table_id, f"{status} {customer_id} is waiting for waiter")
-    # logging.info(f"{status} {customer_id} has been seated at a table.")
-    # Request a waiter
+
+
     waiter_queue.put((priority, customer_id, customer_id, eating_event))
-    eating_event.wait()  # Wait for the waiter to take the order and the chef to prepare the food
+    eating_event.wait() 
     eating_event.clear()
 
-    # Eating
-    # logging.info(f"{status} {customer_id} is eating.")
+
+
     update_table_status(table_id, f"{status} {customer_id} is eating")
-    time.sleep(3)  # Simulate the time taken to eat the meal
+    time.sleep(3) 
     logging.info(f"{status} {customer_id} finished eating at table {table_id}.")
     update_table_status(table_id, "Available")
-    # Release the table semaphore to indicate the table is now free
+
     release_table(table_id)
     table_semaphore.release()
 
-    # Request to pay
+
     cash_register_queue.put((priority, customer_id, customer_id, payment_event))
-    payment_event.wait()  # Wait for the cash register to be available
+    payment_event.wait() 
     payment_event.clear()
+    global customers_served
+    customers_served +=1
 
-    # logging.info(f"{status} {customer_id} has completed dining and payment.")
 
-def start_simulation(customer_list):
+def start_simulation(customer_list,tableCount,waiterCount,chefCount,customer_interval):
     logging.info("Starting simulation.")
-    # Start the threads for managing tables, chefs, and cash registers
+    time.sleep(10)
+    
+
+    table_count = tableCount
+    waiter_count = waiterCount
+    chef_count = chefCount
     threading.Thread(target=manage_tables, daemon=True).start()
     for chef_id in range(1, chef_count + 1):
         threading.Thread(target=chef, args=(chef_id,), daemon=True).start()
@@ -224,22 +228,22 @@ def start_simulation(customer_list):
         threading.Thread(target=waiter, args=(waiter_id,), daemon=True).start()
     threading.Thread(target=manage_cash_registers, daemon=True).start()
 
-    # Create the customer processes based on the customer_list data
+
     customer_id = 0
     for customer in customer_list:
         total_customers = int(customer['total'])
         priority_customers = int(customer['priority'])
-       
 
-        # Create priority customer threads
+
+    
         for _ in range(priority_customers):
             customer_id += 1
             threading.Thread(target=customer_process, args=(customer_id, True), daemon=True).start()
-            time.sleep(0.05)  # Delay between thread starts
+            time.sleep(0.05) 
 
-        # Create normal customer threads
+    
         for _ in range(total_customers - priority_customers):
             customer_id += 1
             threading.Thread(target=customer_process, args=(customer_id, False), daemon=True).start()
             time.sleep(0.05)
-        time.sleep(5)
+        time.sleep(customer_interval)

@@ -11,15 +11,11 @@
             align-items: center;
             padding: 10px 20px;
             position: fixed;
-            /* changed from absolute to fixed */
             top: 0;
             left: 0;
             right: 0;
-            /* Ensure the header spans the full width */
             background-color: #f7f7f7;
-            /* Match the body background */
             z-index: 1000;
-            /* Ensure the header is above all other content */
         }
         
         .button-group-left,
@@ -34,7 +30,6 @@
         
         button {
             background-color: #4CAF50;
-            /* Green */
             border: none;
             color: white;
             padding: 10px 20px;
@@ -59,7 +54,6 @@
             background-color: #f7f7f7;
             margin: 0;
             padding-top: 70px;
-            /* Increased padding to ensure content starts below the header */
         }
         
         .container {
@@ -75,10 +69,8 @@
             text-align: center;
             width: 100%;
             margin-top: 20px;
-            /* Adjust the margin-top to give space for the header */
             color: #333;
             font-size: 2em;
-            /* Increase the font size if needed */
         }
         
         .waiters-container {
@@ -86,43 +78,31 @@
             flex-wrap: wrap;
             justify-content: space-around;
             padding-top: 40px;
-            /* Adjusts spacing around items */
             align-items: flex-start;
-            /* Aligns items at the start of the container */
             gap: 20px;
-            /* Space between chefs */
         }
         
         .waiter {
             flex: 1 0 22%;
-            /* 4 per row */
             box-sizing: border-box;
             text-align: center;
-            /* Center the text and image in the div */
         }
         
         .waiter img {
             max-width: 100%;
-            /* Makes image responsive within its container */
             height: auto;
-            /* Maintain aspect ratio */
             max-height: 150px;
-            /* Adjust this value to scale the images down */
         }
-        /* Media query for smaller screens */
         
         @media (max-width: 20px) {
             .waiter {
                 flex: 1 0 45%;
-                /* Adjusts the base width for smaller screens */
             }
         }
-        /* Media query for very small screens */
         
         @media (max-width: 10px) {
             .waiter {
                 flex: 1 0 10%;
-                /* Each chef takes full width on very small screens */
             }
         }
     </style>
@@ -166,8 +146,6 @@
         }
         waiterSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            // 'type' is not typically included in the data unless you send it explicitly
-            // If you're sending it, you'll need to adjust the backend code accordingly
             updateWaiterStatus(data.message.id, data.message.status);
         };
     </script>
