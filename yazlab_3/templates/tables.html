@@ -127,8 +127,17 @@
             }
         }
         
+        .queue-status-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        
         .queue-container,
         .left-container {
+            flex: 1;
+            /* This gives each list an equal amount of space */
+            margin: 0 10px;
             margin-top: 20px;
             padding: 0 20px;
         }
@@ -189,18 +198,20 @@
         </div>
         {% endfor %}
     </div>
-    <div class="queue-container">
-        <h2>Waiting Queue</h2>
-        <ul id="waiting-queue">
-            <!-- Waiting customers will be listed here -->
-        </ul>
-    </div>
+    <div class="queue-status-container">
+        <div class="queue-container">
+            <h2>Waiting Queue</h2>
+            <ul id="waiting-queue">
+                <!-- Waiting customers will be listed here -->
+            </ul>
+        </div>
 
-    <div class="left-container">
-        <h2>Customers Left</h2>
-        <ul id="customers-left">
-            <!-- Customers who have left will be listed here -->
-        </ul>
+        <div class="left-container">
+            <h2>Customers Left</h2>
+            <ul id="customers-left">
+                <!-- Customers who have left will be listed here -->
+            </ul>
+        </div>
     </div>
     <script>
         const tableSocket = new WebSocket('ws://' + window.location.host + '/ws/table/');
