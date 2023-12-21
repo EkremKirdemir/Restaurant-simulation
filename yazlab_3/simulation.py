@@ -213,14 +213,10 @@ def customer_process(customer_id,priority):
     customers_served +=1
 
 
-def start_simulation(customer_list,tableCount,waiterCount,chefCount,customer_interval):
+def start_simulation(customer_list,customer_interval):
     logging.info("Starting simulation.")
     time.sleep(10)
     
-
-    table_count = tableCount
-    waiter_count = waiterCount
-    chef_count = chefCount
     threading.Thread(target=manage_tables, daemon=True).start()
     for chef_id in range(1, chef_count + 1):
         threading.Thread(target=chef, args=(chef_id,), daemon=True).start()

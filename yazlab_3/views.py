@@ -17,7 +17,7 @@ def index(request):
 def start_simulation_view(request):
     try:
         customer_list = json.loads(request.body)
-        start_simulation(customer_list,6,3,2,5)
+        start_simulation(customer_list,5)
         return JsonResponse({'status': 'Simulation started'})
     except json.JSONDecodeError as e:
         return JsonResponse({'status': 'Invalid data', 'error': str(e)}, status=400)
