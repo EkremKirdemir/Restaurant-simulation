@@ -5,6 +5,10 @@ import queue
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 import logging
+from datetime import datetime
+import os
+
+
 
 
 logging.basicConfig(level=logging.INFO, filename='simulation.log', filemode='a',
@@ -16,7 +20,6 @@ waiter_count = 3
 chef_count = 2
 cash_register_count = 1
 
-customers_served = 0
 waiter_semaphore = threading.Semaphore(waiter_count)
 chef_semaphore = threading.Semaphore(chef_count)
 table_semaphore = threading.Semaphore(table_count)
@@ -28,6 +31,16 @@ cash_register_queue = queue.PriorityQueue()
 
 table_assignments = {i: None for i in range(1, table_count + 1)}
 table_lock = threading.Lock()
+def clear_log_file():
+    base_dir = '/Users/kirdemir/Desktop/yazlab_3/yazlab_3'
+    log_file = os.path.join(base_dir, "logs.txt")
+    with open(log_file, "w") as f:
+        pass
+def logMessage(message):
+    base_dir = '/Users/kirdemir/Desktop/yazlab_3/yazlab_3'
+    log_file = os.path.join(base_dir, "logs.txt")
+    with open(log_file, "a") as f:
+        f.write("{0} -- {1}\n".format(datetime.now().strftime("%Y-%m-%d %H:%M"), message))
 
 def assign_table(customer_id):
     with table_lock:
@@ -103,7 +116,7 @@ def manage_tables():
         priority, arrival_time, customer_id, customer_event = table_queue.get()
         table_semaphore.acquire() 
         status = "Priority customer" if priority else "Customer"
-        logging.info(f"{status} {customer_id} has been seated at a table.")
+        logMessage(f"{status} {customer_id} has been seated at a table.")
         customer_event.set() 
         table_queue.task_done()
 
@@ -119,9 +132,10 @@ def chef(chef_id):
         status = "Priority customer" if priority else "Customer"
     
         update_chef_status(chef_id,f"Chef {chef_id} is preparing dishes of {status} {customer_id}.")
+        logMessage(f"Chef {chef_id} is preparing dishes of {status} {customer_id}.")
         time.sleep(3)
         update_chef_status(chef_id,f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
-    
+        logMessage(f"{status} {customer_id}'s dish is ready by Chef {chef_id}.")
         chef_queue.task_done()
 
         customer_event.set()
@@ -141,8 +155,10 @@ def waiter(waiter_id):
         status = "Priority customer" if priority else "Customer"
     
         update_waiter_status(waiter_id,f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
+        logMessage(f" Waiter {waiter_id} is taking order from {status} {customer_id}.")
         time.sleep(2)
         update_waiter_status(waiter_id,f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
+        logMessage(f"Waiter {waiter_id} is carrying order from {status} {customer_id} to chef.")
     
         waiter_queue.task_done()
 
@@ -160,6 +176,7 @@ def manage_cash_registers():
         status = "Priority customer" if priority else "Customer"
     
         update_cashRegister_status(1,f"{status} {customer_id} is paying.")
+        logMessage(f"{status} {customer_id} is paying.")
         time.sleep(1)
         update_cashRegister_status(1,"Available")
         customer_event.set() 
@@ -177,7 +194,7 @@ def customer_process(customer_id,priority):
     if not table_semaphore.acquire(timeout=20):
         update_queue_status('remove_from_queue', customer_id,status)
         update_queue_status('add_to_left', customer_id,status)
-        logging.info(f"{status} {customer_id} left the restaurant after waiting too long for a table.")
+        logMessage(f"{status} {customer_id} left the restaurant after waiting too long for a table.")
         return 
 
 
@@ -187,9 +204,9 @@ def customer_process(customer_id,priority):
         table_semaphore.release()
         return
     update_queue_status('remove_from_queue', customer_id,status)
-    logging.info(f"{status} {customer_id} has been seated at table {table_id}.")
+    logMessage(f"{status} {customer_id} has been seated at table {table_id}.")
     update_table_status(table_id, f"{status} {customer_id} is waiting for waiter")
-
+    logMessage(f"{status} {customer_id} is waiting for waiter at table {table_id}")
 
     waiter_queue.put((priority, customer_id, customer_id, eating_event))
     eating_event.wait() 
@@ -198,8 +215,9 @@ def customer_process(customer_id,priority):
 
 
     update_table_status(table_id, f"{status} {customer_id} is eating")
+    logMessage(f"{status} {customer_id} is eating")
     time.sleep(3) 
-    logging.info(f"{status} {customer_id} finished eating at table {table_id}.")
+    logMessage(f"{status} {customer_id} finished eating at table {table_id}.")
     update_table_status(table_id, "Available")
 
     release_table(table_id)
@@ -209,13 +227,13 @@ def customer_process(customer_id,priority):
     cash_register_queue.put((priority, customer_id, customer_id, payment_event))
     payment_event.wait() 
     payment_event.clear()
-    global customers_served
-    customers_served +=1
 
 
 def start_simulation(customer_list,customer_interval):
-    logging.info("Starting simulation.")
-    time.sleep(10)
+    clear_log_file()
+    logMessage("Starting simulation.")
+    logMessage("Simulation Started")
+    time.sleep(5)
     
     threading.Thread(target=manage_tables, daemon=True).start()
     for chef_id in range(1, chef_count + 1):
