@@ -1,125 +1,122 @@
-2023-12-21 23:22 -- Starting simulation.
-2023-12-21 23:22 -- Simulation Started
-2023-12-21 23:22 -- Customer 1 has been seated at table 1.
-2023-12-21 23:22 -- Customer 1 is waiting for waiter at table 1
-2023-12-21 23:22 --  Waiter 1 is taking order from Customer 1.
-2023-12-21 23:22 -- Customer 2 has been seated at table 2.
-2023-12-21 23:22 -- Customer 2 is waiting for waiter at table 2
-2023-12-21 23:22 --  Waiter 3 is taking order from Customer 2.
-2023-12-21 23:22 -- Customer 3 has been seated at table 3.
-2023-12-21 23:22 -- Customer 3 is waiting for waiter at table 3
-2023-12-21 23:22 --  Waiter 2 is taking order from Customer 3.
-2023-12-21 23:22 -- Customer 4 has been seated at table 4.
-2023-12-21 23:22 -- Customer 4 is waiting for waiter at table 4
-2023-12-21 23:22 -- Customer 5 has been seated at table 5.
-2023-12-21 23:22 -- Customer 5 is waiting for waiter at table 5
-2023-12-21 23:22 -- Customer 6 has been seated at table 6.
-2023-12-21 23:22 -- Customer 6 is waiting for waiter at table 6
-2023-12-21 23:22 -- Waiter 1 is carrying order from Customer 1 to chef.
-2023-12-21 23:22 -- Chef 1 is preparing dishes of Customer 1.
-2023-12-21 23:22 -- Waiter 3 is carrying order from Customer 2 to chef.
-2023-12-21 23:22 -- Chef 2 is preparing dishes of Customer 2.
-2023-12-21 23:22 -- Waiter 2 is carrying order from Customer 3 to chef.
-2023-12-21 23:22 -- Customer 1's dish is ready by Chef 1.
-2023-12-21 23:22 -- Chef 1 is preparing dishes of Customer 3.
-2023-12-21 23:22 --  Waiter 1 is taking order from Customer 4.
-2023-12-21 23:22 -- Customer 1 is eating
-2023-12-21 23:22 -- Customer 2's dish is ready by Chef 2.
-2023-12-21 23:22 --  Waiter 2 is taking order from Customer 5.
-2023-12-21 23:22 -- Customer 2 is eating
-2023-12-21 23:22 -- Waiter 1 is carrying order from Customer 4 to chef.
-2023-12-21 23:22 -- Chef 2 is preparing dishes of Customer 4.
-2023-12-21 23:22 -- Waiter 2 is carrying order from Customer 5 to chef.
-2023-12-21 23:22 -- Customer 1 finished eating at table 1.
-2023-12-21 23:22 -- Customer 3's dish is ready by Chef 1.
-2023-12-21 23:22 -- Customer 2 finished eating at table 2.
-2023-12-21 23:22 -- Chef 2 is preparing dishes of Customer 5.
-2023-12-21 23:22 --  Waiter 3 is taking order from Customer 6.
-2023-12-21 23:22 -- Customer 1 is paying.
-2023-12-21 23:22 -- Customer 3 is eating
-2023-12-21 23:22 -- Customer 7 has been seated at table 1.
-2023-12-21 23:22 -- Customer 2 is paying.
-2023-12-21 23:22 -- Customer 8 has been seated at table 2.
-2023-12-21 23:22 -- Customer 7 is waiting for waiter at table 1
-2023-12-21 23:22 -- Customer 8 is waiting for waiter at table 2
-2023-12-21 23:22 -- Customer 4's dish is ready by Chef 2.
-2023-12-21 23:22 --  Waiter 1 is taking order from Customer 7.
-2023-12-21 23:22 -- Customer 4 is eating
-2023-12-21 23:22 -- Waiter 3 is carrying order from Customer 6 to chef.
-2023-12-21 23:22 -- Chef 1 is preparing dishes of Customer 6.
-2023-12-21 23:22 -- Customer 5's dish is ready by Chef 2.
-2023-12-21 23:22 -- Customer 3 finished eating at table 3.
-2023-12-21 23:22 --  Waiter 3 is taking order from Customer 8.
-2023-12-21 23:22 -- Customer 5 is eating
-2023-12-21 23:22 -- Customer 3 is paying.
-2023-12-21 23:22 -- Customer 9 has been seated at table 3.
-2023-12-21 23:22 -- Customer 9 is waiting for waiter at table 3
-2023-12-21 23:22 -- Waiter 1 is carrying order from Customer 7 to chef.
-2023-12-21 23:22 -- Chef 1 is preparing dishes of Customer 7.
-2023-12-21 23:22 -- Customer 4 finished eating at table 4.
-2023-12-21 23:22 -- Customer 6's dish is ready by Chef 1.
-2023-12-21 23:22 -- Customer 10 has been seated at table 4.
-2023-12-21 23:22 -- Customer 4 is paying.
-2023-12-21 23:22 -- Waiter 3 is carrying order from Customer 8 to chef.
-2023-12-21 23:22 --  Waiter 2 is taking order from Customer 9.
-2023-12-21 23:22 -- Customer 10 is waiting for waiter at table 4
-2023-12-21 23:22 -- Customer 6 is eating
-2023-12-21 23:22 -- Chef 2 is preparing dishes of Customer 8.
-2023-12-21 23:22 -- Customer 5 finished eating at table 5.
-2023-12-21 23:22 -- Customer 5 is paying.
-2023-12-21 23:22 -- Priority customer 11 has been seated at table 5.
-2023-12-21 23:22 -- Priority customer 11 is waiting for waiter at table 5
-2023-12-21 23:22 -- Customer 7's dish is ready by Chef 1.
-2023-12-21 23:22 --  Waiter 1 is taking order from Customer 10.
-2023-12-21 23:22 -- Customer 7 is eating
-2023-12-21 23:22 -- Waiter 2 is carrying order from Customer 9 to chef.
-2023-12-21 23:22 -- Chef 2 is preparing dishes of Customer 9.
-2023-12-21 23:22 -- Customer 6 finished eating at table 6.
-2023-12-21 23:22 -- Customer 8's dish is ready by Chef 2.
-2023-12-21 23:22 --  Waiter 2 is taking order from Priority customer 11.
-2023-12-21 23:22 -- Customer 6 is paying.
-2023-12-21 23:22 -- Customer 8 is eating
-2023-12-21 23:22 -- Priority customer 12 has been seated at table 6.
-2023-12-21 23:22 -- Priority customer 12 is waiting for waiter at table 6
-2023-12-21 23:22 -- Waiter 1 is carrying order from Customer 10 to chef.
-2023-12-21 23:22 -- Chef 1 is preparing dishes of Customer 10.
-2023-12-21 23:22 -- Customer 7 finished eating at table 1.
-2023-12-21 23:22 -- Customer 7 is paying.
-2023-12-21 23:22 -- Priority customer 13 has been seated at table 1.
-2023-12-21 23:22 -- Priority customer 13 is waiting for waiter at table 1
-2023-12-21 23:22 -- Customer 9's dish is ready by Chef 2.
-2023-12-21 23:22 --  Waiter 3 is taking order from Priority customer 12.
-2023-12-21 23:22 -- Customer 9 is eating
-2023-12-21 23:22 -- Waiter 2 is carrying order from Priority customer 11 to chef.
-2023-12-21 23:22 -- Chef 1 is preparing dishes of Priority customer 11.
-2023-12-21 23:22 -- Customer 8 finished eating at table 2.
-2023-12-21 23:22 -- Customer 8 is paying.
-2023-12-21 23:22 -- Priority customer 14 has been seated at table 2.
-2023-12-21 23:22 -- Priority customer 14 is waiting for waiter at table 2
-2023-12-21 23:22 -- Customer 10's dish is ready by Chef 1.
-2023-12-21 23:22 --  Waiter 1 is taking order from Priority customer 13.
-2023-12-21 23:22 -- Customer 10 is eating
-2023-12-21 23:22 -- Waiter 3 is carrying order from Priority customer 12 to chef.
-2023-12-21 23:22 -- Chef 2 is preparing dishes of Priority customer 12.
-2023-12-21 23:22 -- Customer 9 finished eating at table 3.
-2023-12-21 23:22 -- Customer 9 is paying.
-2023-12-21 23:22 -- Priority customer 15 has been seated at table 3.
-2023-12-21 23:22 -- Priority customer 11's dish is ready by Chef 1.
-2023-12-21 23:22 -- Priority customer 15 is waiting for waiter at table 3
-2023-12-21 23:22 --  Waiter 3 is taking order from Priority customer 14.
-2023-12-21 23:22 -- Priority customer 11 is eating
-2023-12-21 23:22 -- Waiter 1 is carrying order from Priority customer 13 to chef.
-2023-12-21 23:22 -- Chef 2 is preparing dishes of Priority customer 13.
-2023-12-21 23:22 -- Customer 10 finished eating at table 4.
-2023-12-21 23:22 -- Customer 10 is paying.
-2023-12-21 23:22 -- Priority customer 16 has been seated at table 4.
-2023-12-21 23:22 -- Priority customer 16 is waiting for waiter at table 4
-2023-12-21 23:22 -- Priority customer 12's dish is ready by Chef 2.
-2023-12-21 23:22 --  Waiter 2 is taking order from Priority customer 15.
-2023-12-21 23:22 -- Priority customer 12 is eating
-2023-12-21 23:22 -- Waiter 3 is carrying order from Priority customer 14 to chef.
-2023-12-21 23:22 -- Chef 1 is preparing dishes of Priority customer 14.
-2023-12-21 23:22 -- Priority customer 11 finished eating at table 5.
-2023-12-21 23:22 -- Priority customer 11 is paying.
-2023-12-21 23:22 -- Priority customer 17 has been seated at table 5.
-2023-12-21 23:22 -- Priority customer 17 is waiting for waiter at table 5
+2023-12-25 13:27 -- Starting simulation.
+2023-12-25 13:27 -- Simulation Started
+2023-12-25 13:27 -- Table 1 assigned to Customer 1.
+2023-12-25 13:27 -- Customer 1 seated at table 1.
+2023-12-25 13:27 -- Priority customer 1 has been seated at table 1.
+2023-12-25 13:27 --  Waiter 1 is taking order from Priority customer 1.
+2023-12-25 13:27 -- Table 2 assigned to Customer 2.
+2023-12-25 13:27 -- Customer 2 seated at table 2.
+2023-12-25 13:27 -- Priority customer 2 has been seated at table 2.
+2023-12-25 13:27 --  Waiter 2 is taking order from Priority customer 2.
+2023-12-25 13:27 -- Table 3 assigned to Customer 3.
+2023-12-25 13:27 -- Customer 3 seated at table 3.
+2023-12-25 13:27 -- Priority customer 3 has been seated at table 3.
+2023-12-25 13:27 --  Waiter 3 is taking order from Priority customer 3.
+2023-12-25 13:27 -- Table 4 assigned to Customer 4.
+2023-12-25 13:27 -- Customer 4 seated at table 4.
+2023-12-25 13:27 -- Priority customer 4 has been seated at table 4.
+2023-12-25 13:27 -- Table 5 assigned to Customer 5.
+2023-12-25 13:27 -- Customer 5 seated at table 5.
+2023-12-25 13:27 -- Priority customer 5 has been seated at table 5.
+2023-12-25 13:27 -- Table 6 assigned to Customer 6.
+2023-12-25 13:27 -- Customer 6 seated at table 6.
+2023-12-25 13:27 -- Priority customer 6 has been seated at table 6.
+2023-12-25 13:27 -- Waiter 1 is carrying order from Priority customer 1 to chef.
+2023-12-25 13:27 -- Chef 2 is preparing dishes of Priority customer 1.
+2023-12-25 13:27 -- Waiter 2 is carrying order from Priority customer 2 to chef.
+2023-12-25 13:27 -- Chef 1 is preparing dishes of Priority customer 2.
+2023-12-25 13:27 -- Waiter 3 is carrying order from Priority customer 3 to chef.
+2023-12-25 13:27 -- Priority customer 1's dish is ready by Chef 2.
+2023-12-25 13:27 -- Priority customer 1 is eating
+2023-12-25 13:27 -- Chef 2 is preparing dishes of Priority customer 3.
+2023-12-25 13:27 --  Waiter 1 is taking order from Priority customer 4.
+2023-12-25 13:27 -- Priority customer 2's dish is ready by Chef 1.
+2023-12-25 13:27 -- Priority customer 2 is eating
+2023-12-25 13:27 --  Waiter 2 is taking order from Priority customer 5.
+2023-12-25 13:27 -- Waiter 1 is carrying order from Priority customer 4 to chef.
+2023-12-25 13:27 -- Chef 1 is preparing dishes of Priority customer 4.
+2023-12-25 13:27 -- Waiter 2 is carrying order from Priority customer 5 to chef.
+2023-12-25 13:27 -- Priority customer 1 is paying.
+2023-12-25 13:27 -- Priority customer 3's dish is ready by Chef 2.
+2023-12-25 13:27 -- Priority customer 3 is eating
+2023-12-25 13:27 -- Chef 2 is preparing dishes of Priority customer 5.
+2023-12-25 13:27 --  Waiter 3 is taking order from Priority customer 6.
+2023-12-25 13:27 -- Priority customer 1 is paying.
+2023-12-25 13:27 -- Priority customer 2 is paying.
+2023-12-25 13:27 -- Priority customer 4's dish is ready by Chef 1.
+2023-12-25 13:27 -- Priority customer 4 is eating
+2023-12-25 13:27 -- Table 1 released and now available.
+2023-12-25 13:27 -- Table 1 assigned to Customer 7.
+2023-12-25 13:27 -- Table 1 released by Priority customer 1.
+2023-12-25 13:27 -- Customer 7 seated at table 1.
+2023-12-25 13:27 -- Priority customer 2 is paying.
+2023-12-25 13:27 -- Waiter 3 is carrying order from Priority customer 6 to chef.
+2023-12-25 13:27 -- Chef 1 is preparing dishes of Priority customer 6.
+2023-12-25 13:27 -- Customer 7 has been seated at table 1.
+2023-12-25 13:27 --  Waiter 1 is taking order from Customer 7.
+2023-12-25 13:27 -- Priority customer 3 is paying.
+2023-12-25 13:27 -- Priority customer 5's dish is ready by Chef 2.
+2023-12-25 13:27 -- Priority customer 5 is eating
+2023-12-25 13:27 -- Table 2 released and now available.
+2023-12-25 13:27 -- Table 2 released by Priority customer 2.
+2023-12-25 13:27 -- Table 2 assigned to Customer 8.
+2023-12-25 13:27 -- Customer 8 seated at table 2.
+2023-12-25 13:27 -- Customer 8 has been seated at table 2.
+2023-12-25 13:27 --  Waiter 2 is taking order from Customer 8.
+2023-12-25 13:27 -- Priority customer 3 is paying.
+2023-12-25 13:27 -- Waiter 1 is carrying order from Customer 7 to chef.
+2023-12-25 13:27 -- Chef 2 is preparing dishes of Customer 7.
+2023-12-25 13:27 -- Priority customer 4 is paying.
+2023-12-25 13:27 -- Priority customer 6's dish is ready by Chef 1.
+2023-12-25 13:27 -- Priority customer 6 is eating
+2023-12-25 13:27 -- Table 3 released and now available.
+2023-12-25 13:27 -- Table 3 released by Priority customer 3.
+2023-12-25 13:27 -- Table 3 assigned to Customer 9.
+2023-12-25 13:27 -- Customer 9 seated at table 3.
+2023-12-25 13:27 -- Waiter 2 is carrying order from Customer 8 to chef.
+2023-12-25 13:27 -- Chef 1 is preparing dishes of Customer 8.
+2023-12-25 13:27 -- Customer 9 has been seated at table 3.
+2023-12-25 13:27 --  Waiter 3 is taking order from Customer 9.
+2023-12-25 13:27 -- Priority customer 4 is paying.
+2023-12-25 13:27 -- Priority customer 5 is paying.
+2023-12-25 13:27 -- Table 4 released and now available.
+2023-12-25 13:27 -- Table 4 released by Priority customer 4.
+2023-12-25 13:27 -- Table 4 assigned to Customer 10.
+2023-12-25 13:27 -- Customer 10 seated at table 4.
+2023-12-25 13:27 -- Priority customer 5 is paying.
+2023-12-25 13:27 -- Customer 10 has been seated at table 4.
+2023-12-25 13:27 -- Customer 7's dish is ready by Chef 2.
+2023-12-25 13:27 -- Customer 7 is eating
+2023-12-25 13:27 --  Waiter 1 is taking order from Customer 10.
+2023-12-25 13:27 -- Waiter 3 is carrying order from Customer 9 to chef.
+2023-12-25 13:27 -- Chef 2 is preparing dishes of Customer 9.
+2023-12-25 13:27 -- Table 5 released and now available.
+2023-12-25 13:27 -- Table 5 released by Priority customer 5.
+2023-12-25 13:27 -- Priority customer 6 is paying.
+2023-12-25 13:27 -- Customer 8's dish is ready by Chef 1.
+2023-12-25 13:27 -- Customer 8 is eating
+2023-12-25 13:27 -- Priority customer 6 is paying.
+2023-12-25 13:27 -- Waiter 1 is carrying order from Customer 10 to chef.
+2023-12-25 13:27 -- Chef 1 is preparing dishes of Customer 10.
+2023-12-25 13:27 -- Table 6 released and now available.
+2023-12-25 13:27 -- Table 6 released by Priority customer 6.
+2023-12-25 13:27 -- Customer 7 is paying.
+2023-12-25 13:27 -- Customer 9's dish is ready by Chef 2.
+2023-12-25 13:27 -- Customer 9 is eating
+2023-12-25 13:27 -- Customer 7 is paying.
+2023-12-25 13:27 -- Customer 8 is paying.
+2023-12-25 13:27 -- Customer 10's dish is ready by Chef 1.
+2023-12-25 13:27 -- Customer 10 is eating
+2023-12-25 13:27 -- Table 1 released and now available.
+2023-12-25 13:27 -- Table 1 released by Customer 7.
+2023-12-25 13:27 -- Customer 8 is paying.
+2023-12-25 13:27 -- Table 2 released and now available.
+2023-12-25 13:27 -- Table 2 released by Customer 8.
+2023-12-25 13:27 -- Customer 9 is paying.
+2023-12-25 13:27 -- Customer 9 is paying.
+2023-12-25 13:27 -- Customer 10 is paying.
+2023-12-25 13:27 -- Table 3 released and now available.
+2023-12-25 13:27 -- Table 3 released by Customer 9.
+2023-12-25 13:27 -- Customer 10 is paying.
+2023-12-25 13:27 -- Table 4 released and now available.
+2023-12-25 13:27 -- Table 4 released by Customer 10.
